@@ -1,0 +1,102 @@
+---
+author: Salif Nikiema
+title: "ProjectPart1"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+
+```{r}
+cfb <- read_csv("messy_dataset.csv")
+```
+
+#Introduction 
+For my Data set I selected a college football team statistics i shortened the data from its original file because the original contained 150 different variables which is understanding because football contains many stats but I managed to trim it down to about 6 core variables and I intentionally added some missing variables.
+-Team
+-Games
+-Offensive Yards
+-Passing Yards
+-Rush Yards
+-Points Per Game
+
+#Research Questions 
+1.Do teams with higher offensive yards tend to win more games
+2.Is passing yards or rushing yards more strongly related to points per game
+3.Do teams with higher overall offensive production score more points per game?
+
+#DataSet
+```{r}
+cfb
+```
+#Checking for missing values and duplicates 
+```{r}
+# checking for missing values by column
+colSums(is.na(cfb))
+
+# checking for duplicates
+sum(duplicated(cfb))
+```
+
+#Cleaning
+
+```{r}
+# Remove duplicates if I have any 
+cfb_clean <- cfb %>%
+  distinct() %>%
+  mutate(`Off Yards`= ifelse(is.na(`Off Yards`),median(`Off Yards`, na.rm = TRUE), `Off Yards`),
+    `Pass Yards` = ifelse(is.na(`Pass Yards`),median(`Pass Yards`,na.rm = TRUE), `Pass Yards`),
+    `Rush Yds` = ifelse(is.na(`Rush Yds`), median(`Rush Yds`, na.rm = TRUE), `Rush Yds`),
+    `Points Per Game` = ifelse(is.na(`Points Per Game`), median(`Points Per Game`, na.rm = TRUE), `Points Per Game`),
+    Games  = ifelse(is.na(Games), median(Games, na.rm = TRUE), Games))
+
+
+```
+
+#Double Checking to see if it works
+```{r}
+colSums(is.na(cfb_clean))
+sum(duplicated(cfb_clean))
+```
+#Making A csv of my clean dataset
+```{r}
+readr::write_csv(cfb_clean, "cleaned_dataset.csv")
+```
+
+
+#Codebook 
+
+- *Team*:  Team name (categorical)  
+- *Games*: Number of games played (numeric)  
+- *Off Yards*:Total offensive yards (numeric)  
+- *Pass Yards*: Total passing yards (numeric)  
+- *Rush Yds*:  Total rushing yards (numeric)  
+- *Points Per Game*: Average points per game (numeric)  
+
+
+
+#Documentation 
+
+1.I cut down the original data set from 150 plus variables to 6 key variables. 
+
+2.I added some missing values to my data set and added a duplicate row.
+
+3.When cleaning i used the distinct function to remove duplicates and replaced numeric values the column median.
+
+#Principles of DM
+
+1. Data quality - I checked my dataset for missing values and duplicates and I cleaned it by removing duplicates and placing in the missing values
+
+2.Data Governance - I kept track of all the changes that i had made to the original data set by including the missing data and removing a bunch of variables 
+
+#Principles of FM
+
+1.Specific naming - I have my files named  so that way i know which files are which.
+
+2.Organized- all my files for my project are organized in the same folder.
+
+#LLM Usage 
+
+I used LLM in order to help me clean my data and verify that the code worked 
